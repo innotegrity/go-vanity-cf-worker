@@ -19,7 +19,9 @@
 <br />
 
 <!-- omit in toc -->
+
 ## Table of Contents
+
 - [👁️ Overview](#️-overview)
 - [✅ Requirements](#-requirements)
 - [📦 Setup and Deployment](#-setup-and-deployment)
@@ -29,7 +31,7 @@
 
 ## 👁️ Overview
 
-`go-vanity-cf-worker` is a Cloudflare Workers service that provides vanity URLs for Golang's `import` directive. It utilizes both Cloudflare Workers and Cloudflare Workers KV to map vanity package names to actual source repositories.  This makes it very easy to move your actual source packages around or rename source repositories without the need for updating your actual Go code.
+`go-vanity-cf-worker` is a Cloudflare Workers service that provides vanity URLs for Golang's `import` directive. It utilizes both Cloudflare Workers and Cloudflare Workers KV to map vanity package names to actual source repositories. This makes it very easy to move your actual source packages around or rename source repositories without the need for updating your actual Go code.
 
 ## ✅ Requirements
 
@@ -45,15 +47,16 @@ You will need the following software installed on your system:
 
 In order to set up your vanity "server", you'll need to perform the following steps:
 
-1. After cloning the repository, run `yarn setup`.  This will install the required Node packages and prepare the Cloudflare Workers KV namespaces for you.
-  
-    - You can choose any name you'd like for the service.
-    - Cloudflare Worker KV stores can **only** contain alphanumeric and underscore (**_**) characters.
-    - If you already have an existing service, you can just use it by supplying its name here.
-    - The KV store will be named `SERVICE_NAME-STORE_NAME` where `SERVICE_NAME` is the name you choose for the service and `STORE_NAME` is the name you choose for the KV store.
-    - A second KV store will also be created with `_PREVIEW` appended to it. This KV store can be used for testing and development purposes.
-    - Custom domains can be mapped by entering one each when prompted. If no custom domains are required or if you are done entering custom names, simply leave the entry blank.
-    - The setup script can be re-run if changes are required.
+1. After cloning the repository, run `yarn setup`. This will install the required Node packages and prepare the Cloudflare Workers KV namespaces for you.
+
+   - You can choose any name you'd like for the service.
+   - Cloudflare Worker KV stores can **only** contain alphanumeric and underscore (**\_**) characters.
+   - If you already have an existing service, you can just use it by supplying its name here.
+   - The KV store will be named `SERVICE_NAME-STORE_NAME` where `SERVICE_NAME` is the name you choose for the service and `STORE_NAME` is the name you choose for the KV store.
+   - A second KV store will also be created with `_PREVIEW` appended to it. This KV store can be used for testing and development purposes.
+   - Custom domains can be mapped by entering one each when prompted. If no custom domains are required or if you are done entering custom names, simply leave the entry blank.
+   - The setup script can be re-run if changes are required.
+
 2. Once setup has completed, you can populate the `_PREVIEW` KV store in Cloudflare (see [Configuration](#configuration) below) with test values and then run `yarn dev` to test locally.
 3. When you are ready to deploy the worker, simply run `yarn deploy` to publish the settings to Cloudflare.
 4. Populate the production KV store in Cloudflare with your vanity package names and source configurations (see [Configuration](#configuration) below).
@@ -62,7 +65,7 @@ If you wish to make changes to your configuration, you can either re-run the `ya
 
 ## ⚙️ Vanity Package Configuration
 
-Vanity package names are stored in the Cloudflare Workers KV associated with your Cloudflare Workers service.  All keys and values have an implied `https://` protocol associated with them so you do **not** have to specify this in any configuration settings.
+Vanity package names are stored in the Cloudflare Workers KV associated with your Cloudflare Workers service. All keys and values have an implied `https://` protocol associated with them so you do **not** have to specify this in any configuration settings.
 
 Each key in the KV store represents the vanity package name. For example, if you want to point `go.innotegrity.com/toolbox` to `github.com/innotegrity/go-toolbox`, the key should be `go.innotegrity.com/toolbox`.
 
@@ -88,7 +91,7 @@ If you use plaintext, the value should simply be the path to the source reposito
 
 **NOTE:**
 
-Keep in mind that Cloudflare Workers KV values are *eventually* consistent, so it may take a few moments for values to be reflected when they are created or updated.
+Keep in mind that Cloudflare Workers KV values are _eventually_ consistent, so it may take a few moments for values to be reflected when they are created or updated.
 
 ## 📃 License
 
@@ -96,5 +99,4 @@ This module is distributed under the MIT License.
 
 ## ❓ Questions, Issues and Feature Requests
 
-If you have questions about this project, find a bug or wish to submit a feature request, please [submit an issue](https://github.com/innotegritygo-vanity-cf-worker/issues).
-
+If you have questions about this project, find a bug or wish to submit a feature request, please [submit an issue](https://github.com/innotegrity/go-vanity-cf-worker/issues).
