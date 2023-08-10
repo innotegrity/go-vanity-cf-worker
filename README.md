@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="128" src="./logo.png" alt="Cloudflare Workers logo" />
+  <img width="128" src="./logo.svg" alt="log logo" />
   <h1>go-vanity-cf-worker</h1>
   <p>Go vanity URL import server using Cloudflare Workers</p>
   <hr />
@@ -12,6 +12,9 @@
   </a>
   <a href="#">
     <img src="https://img.shields.io/badge/support-community-purple?style=for-the-badge" />
+  </a>
+  <a href="https://conventionalcommits.org" target="_blank">
+    <img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-orange.svg?style=for-the-badge" />
   </a>
 </div>
 <br />
