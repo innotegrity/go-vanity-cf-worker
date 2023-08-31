@@ -23,14 +23,22 @@ async function fetchKeys() {
  * @returns {object} An objection containing the `source`, `vcs` and `defaultBranch` of the Go package repo.
  */
 async function getValue(key) {
+  console.debug(`getting key: ${key}`);
   let resp = undefined;
   try {
     resp = await REPO_KV.get(key, { type: 'json' });
   } catch {
-    resp = await REPO_KV.get(key, { type: 'text' });
-    resp = {
-      source: resp,
-    };
+    try {
+      resp = await REPO_KV.get(key, { type: 'text' });
+      resp = {
+        source: resp,
+      };
+    } catch {
+      return null;
+    }
+  }
+  if (resp === null || resp === undefined) {
+    return null;
   }
   if (resp.vcs == undefined) {
     resp.vcs = 'git';
@@ -80,27 +88,18 @@ function getPackageURL(pkg) {
  * @param {Request} request The incoming HTTP request.
  */
 async function handleRequest(request) {
+  // repo name = hostname + first part of path
   const url = new URL(request.url);
-  const vanity_keys = await fetchKeys();
-
-  // search thru the keys to find the package being requested
-  let searchFor = `${url.hostname}${url.pathname}`;
-  console.debug(`searching for: ${searchFor}`);
-  let pkg = undefined;
-  for (let i = 0; i < vanity_keys.length; i++) {
-    console.debug(`checking pkg: ${vanity_keys[i].name}`);
-    if (
-      searchFor == vanity_keys[i].name ||
-      searchFor.startsWith(`${vanity_keys[i].name}/`)
-    ) {
-      pkg = vanity_keys[i].name;
-      console.debug(`matched package!`);
-      break;
-    }
+  repoSlashPos = url.pathname.indexOf('/', 1);
+  if (repoSlashPos == -1) {
+    repoName = `${url.hostname}${url.pathname}`;
+  } else {
+    repoName = `${url.hostname}${url.pathname.substring(0, repoSlashPos)}`;
   }
 
-  // package was not found
-  if (pkg === undefined) {
+  // get the package
+  const pkg = await getValue(repoName);
+  if (pkg === null) {
     return new Response('404 NOT FOUND', {
       init: {
         headers: { 'Content-Type': 'text/plain' },
@@ -111,11 +110,10 @@ async function handleRequest(request) {
   }
 
   // grab the package information and craft the HTML response
-  const value = await getValue(pkg);
-  console.debug(`package info: ${JSON.stringify(value)}`);
-  const importClause = getImportClause(pkg, value.source, value.vcs);
-  const sourceClause = getSourceClause(pkg, value.source, value.defaultBranch);
-  const pkgURL = getPackageURL(pkg);
+  console.debug(`package info: ${JSON.stringify(pkg)}`);
+  const importClause = getImportClause(repoName, pkg.source, pkg.vcs);
+  const sourceClause = getSourceClause(repoName, pkg.source, pkg.defaultBranch);
+  const pkgURL = getPackageURL(repoName);
   const html = `<!DOCTYPE html>
 <html>
   <head>
