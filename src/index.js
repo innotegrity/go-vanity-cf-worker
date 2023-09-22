@@ -23,7 +23,6 @@ async function fetchKeys() {
  * @returns {object} An objection containing the `source`, `vcs` and `defaultBranch` of the Go package repo.
  */
 async function getValue(key) {
-  console.debug(`getting key: ${key}`);
   let resp = undefined;
   try {
     resp = await REPO_KV.get(key, { type: 'json' });
